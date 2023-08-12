@@ -1,14 +1,11 @@
 ﻿@model IEnumerable<TaskManagementWebApp.Models.AppTask>
 
 @{
-    ViewBag.Title = "App Tasks";
+    ViewBag.Title = "MyTasks";
 }
 
-<h2>App Tasks Data</h2>
+<h2>My Assigned Tasks</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -30,10 +27,7 @@
             @Html.DisplayNameFor(model => model.LastUpdated)
         </th>
         <th>
-            AssignedUser
-        </th>
-        <th>
-            CreatedByUser
+            Assigned By
         </th>
         <th></th>
     </tr>
@@ -59,15 +53,7 @@
             @Html.DisplayFor(modelItem => item.LastUpdated)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.AppUser.Username)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.AppUser1.Username)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TaskId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TaskId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TaskId })
         </td>
     </tr>
 }

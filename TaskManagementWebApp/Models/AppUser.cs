@@ -11,8 +11,7 @@ namespace TaskManagementWebApp.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class AppUser
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,14 +25,10 @@ namespace TaskManagementWebApp.Models
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,100}$", ErrorMessage = "The password must have at least one lowercase letter, one uppercase letter, and one number.")]
         public string PasswordHash { get; set; }
         public System.DateTime DateCreated { get; set; }
         public Nullable<System.DateTime> LastLoginDate { get; set; }
+        public bool IsAdmin { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AppNotification> AppNotification { get; set; }

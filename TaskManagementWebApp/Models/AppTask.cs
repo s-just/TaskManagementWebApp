@@ -11,9 +11,7 @@ namespace TaskManagementWebApp.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Data.Entity.ModelConfiguration.Configuration;
-
+    
     public partial class AppTask
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -25,12 +23,7 @@ namespace TaskManagementWebApp.Models
         public int TaskId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-
-        [Display(Name = "Due Date")]
-        [DisplayFormat(DataFormatString= "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> DueDate { get; set; }
-
-        [Range(0, 2, ErrorMessage = "Status must be between 0 and 2.")]
         public int Status { get; set; }
         public Nullable<int> AssignedToUserId { get; set; }
         public int CreatedByUserId { get; set; }

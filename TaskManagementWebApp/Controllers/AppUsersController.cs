@@ -14,9 +14,30 @@ namespace TaskManagementWebApp.Controllers
     {
         private TMDBEntities db = new TMDBEntities();
 
+
+        private AppUser CurrentUser()
+        {
+            int? userId = Session["UserId"] as int?;
+            if (userId.HasValue)
+            {
+                return db.AppUser.Find(userId.Value);
+            }
+            return null;
+        }
+
+        private bool IsUserAdmin()
+        {
+            var user = CurrentUser();
+            return user != null && user.IsAdmin;
+        }
+
         // GET: AppUsers
         public ActionResult Index()
         {
+            if (!IsUserAdmin())
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View(db.AppUser.ToList());
         }
 
@@ -46,12 +67,20 @@ namespace TaskManagementWebApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserId,Username,Email,PasswordHash,DateCreated,LastLoginDate")] AppUser appUser)
+        public ActionResult Create([Bind(Include = "UserId,Username,Email,PasswordHash,DateCreated,LastLoginDate,IsAdmin")] AppUser appUser)
         {
             if (ModelState.IsValid)
             {
-                appUser.DateCreated = DateTime.Now; // Set DateCreated to the current date and time
-                appUser.LastLoginDate = null; // Initially, set LastLoginDate to null since the user hasn't logged in yet.
+                // Check if this is the first user
+                if (!db.AppUser.Any())
+                {
+                    appUser.IsAdmin = true; // Make the first user an admin
+                }
+                // Hash the password before saving it
+                appUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(appUser.PasswordHash);
+
+                appUser.DateCreated = DateTime.Now;
+                appUser.LastLoginDate = null;
                 db.AppUser.Add(appUser);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -59,6 +88,40 @@ namespace TaskManagementWebApp.Controllers
 
             return View(appUser);
         }
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(string username, string password)
+        {
+            var user = db.AppUser.FirstOrDefault(u => u.Username == username);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            {
+                Session["UserId"] = user.UserId; // Store user Id in session. Not using ASP.NET Identity for simplicity.
+                Session["Username"] = user.Username;
+                // Set the admin flag in session
+                Session["IsAdmin"] = user.IsAdmin;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Invalid username or password.");
+            return View();
+        }
+
+        public ActionResult Logout()
+        {
+            Session["UserId"] = null; // Clear session
+            Session["Username"] = null;
+            Session["IsAdmin"] = null;
+            return RedirectToAction("Login");
+        }
+
+
+
 
         // GET: AppUsers/Edit/5
         public ActionResult Edit(int? id)
@@ -80,7 +143,7 @@ namespace TaskManagementWebApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserId,Username,Email,PasswordHash,DateCreated,LastLoginDate")] AppUser appUser)
+        public ActionResult Edit([Bind(Include = "UserId,Username,Email,PasswordHash,DateCreated,LastLoginDate,IsAdmin")] AppUser appUser)
         {
             if (ModelState.IsValid)
             {

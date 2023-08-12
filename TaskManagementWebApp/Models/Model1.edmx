@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="TMDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="TMDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AppNotification">
           <Key>
             <PropertyRef Name="NotificationId" />
@@ -40,6 +40,7 @@
           <Property Name="PasswordHash" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="DateCreated" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="LastLoginDate" Type="datetime2" Precision="7" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK__AppNotifi__Assoc__4316F928">
           <End Role="AppTask" Type="Self.AppTask" Multiplicity="0..1" />
@@ -110,8 +111,7 @@
             <End Role="AppTask" EntitySet="AppTask" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TMDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -158,6 +158,7 @@
           <NavigationProperty Name="AppNotification" Relationship="Self.FK__AppNotifi__UserI__403A8C7D" FromRole="AppUser" ToRole="AppNotification" />
           <NavigationProperty Name="AppTask" Relationship="Self.FK__AppTask__Assigne__3B75D760" FromRole="AppUser" ToRole="AppTask" />
           <NavigationProperty Name="AppTask1" Relationship="Self.FK__AppTask__Created__3C69FB99" FromRole="AppUser" ToRole="AppTask" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK__AppNotifi__Assoc__4316F928">
           <End Role="AppTask" Type="Self.AppTask" Multiplicity="0..1" />
@@ -264,6 +265,7 @@
           <EntitySetMapping Name="AppUser">
             <EntityTypeMapping TypeName="TMDBModel.AppUser">
               <MappingFragment StoreEntitySet="AppUser">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Email" ColumnName="Email" />

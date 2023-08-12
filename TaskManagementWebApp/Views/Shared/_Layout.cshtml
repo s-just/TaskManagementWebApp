@@ -18,11 +18,36 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Users", "Index", "AppUsers", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Tasks", "Index", "AppTasks", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (Session["UserId"] == null)
+                    {
+                        <li>@Html.ActionLink("Signup", "Create", "AppUsers", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Login", "Login", "AppUsers", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Logout", "Logout", "AppUsers", new { area = "" }, new { @class = "nav-link" })</li>
+                        if (Session["IsAdmin"] != null && (bool)Session["IsAdmin"] == true) // Set by the controller afer login
+                        {
+                            <li>@Html.ActionLink("All Users", "Index", "AppUsers", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                    }
+                    @if (Session["UserId"] != null)
+                    {
+                        if (Session["IsAdmin"] != null && (bool)Session["IsAdmin"] == true)
+                        {
+                            <li>@Html.ActionLink("All Tasks", "Index", "AppTasks", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                    }
+                    <li>@Html.ActionLink("My Tasks", "MyTasks", "AppTasks", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
+                @if (Session["Username"] != null) // Pass: Password1
+                {
+                    <span class="navbar-text">
+                        Hello, @Session["Username"]!
+                    </span>
+                }
             </div>
         </div>
     </nav>

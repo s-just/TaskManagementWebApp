@@ -21,6 +21,21 @@ namespace TaskManagementWebApp.Controllers
             return View(appTask.ToList());
         }
 
+        public ActionResult MyTasks()
+        {
+            // Assuming you have a relationship set up between AppUser and AppTask
+            int? userId = Session["UserId"] as int?;
+            if (userId.HasValue)
+            {
+                var userTasks = db.AppTask.Where(t => t.AssignedToUserId == userId.Value).ToList();
+                return View(userTasks);
+            }
+            else
+            {
+                return RedirectToAction("Login", "AppUsers");  // Or any other appropriate action
+            }
+        }
+
         // GET: AppTasks/Details/5
         public ActionResult Details(int? id)
         {
