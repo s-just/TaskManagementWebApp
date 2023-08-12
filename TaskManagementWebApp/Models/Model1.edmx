@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TMDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AppNotification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="AssociatedTaskId" Type="int" />
+        </EntityType>
+        <EntityType Name="AppTask">
+          <Key>
+            <PropertyRef Name="TaskId" />
+          </Key>
+          <Property Name="TaskId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="DueDate" Type="datetime2" Precision="7" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="AssignedToUserId" Type="int" />
+          <Property Name="CreatedByUserId" Type="int" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="LastLoginDate" Type="datetime2" Precision="7" />
+        </EntityType>
+        <Association Name="FK__AppNotifi__Assoc__4316F928">
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="0..1" />
+          <End Role="AppNotification" Type="Self.AppNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppTask">
+              <PropertyRef Name="TaskId" />
+            </Principal>
+            <Dependent Role="AppNotification">
+              <PropertyRef Name="AssociatedTaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppNotifi__UserI__403A8C7D">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="AppNotification" Type="Self.AppNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppNotification">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppTask__Assigne__3B75D760">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="0..1" />
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppTask">
+              <PropertyRef Name="AssignedToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppTask__Created__3C69FB99">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppTask">
+              <PropertyRef Name="CreatedByUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TMDBModelStoreContainer">
+          <EntitySet Name="AppNotification" EntityType="Self.AppNotification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppTask" EntityType="Self.AppTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppUser" EntityType="Self.AppUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__AppNotifi__Assoc__4316F928" Association="Self.FK__AppNotifi__Assoc__4316F928">
+            <End Role="AppTask" EntitySet="AppTask" />
+            <End Role="AppNotification" EntitySet="AppNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppNotifi__UserI__403A8C7D" Association="Self.FK__AppNotifi__UserI__403A8C7D">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppNotification" EntitySet="AppNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppTask__Assigne__3B75D760" Association="Self.FK__AppTask__Assigne__3B75D760">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppTask" EntitySet="AppTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppTask__Created__3C69FB99" Association="Self.FK__AppTask__Created__3C69FB99">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppTask" EntitySet="AppTask" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TMDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AppNotification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="AssociatedTaskId" Type="Int32" />
+          <NavigationProperty Name="AppTask" Relationship="Self.FK__AppNotifi__Assoc__4316F928" FromRole="AppNotification" ToRole="AppTask" />
+          <NavigationProperty Name="AppUser" Relationship="Self.FK__AppNotifi__UserI__403A8C7D" FromRole="AppNotification" ToRole="AppUser" />
+        </EntityType>
+        <EntityType Name="AppTask">
+          <Key>
+            <PropertyRef Name="TaskId" />
+          </Key>
+          <Property Name="TaskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DueDate" Type="DateTime" Precision="7" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="AssignedToUserId" Type="Int32" />
+          <Property Name="CreatedByUserId" Type="Int32" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="AppNotification" Relationship="Self.FK__AppNotifi__Assoc__4316F928" FromRole="AppTask" ToRole="AppNotification" />
+          <NavigationProperty Name="AppUser" Relationship="Self.FK__AppTask__Assigne__3B75D760" FromRole="AppTask" ToRole="AppUser" />
+          <NavigationProperty Name="AppUser1" Relationship="Self.FK__AppTask__Created__3C69FB99" FromRole="AppTask" ToRole="AppUser" />
+        </EntityType>
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="LastLoginDate" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="AppNotification" Relationship="Self.FK__AppNotifi__UserI__403A8C7D" FromRole="AppUser" ToRole="AppNotification" />
+          <NavigationProperty Name="AppTask" Relationship="Self.FK__AppTask__Assigne__3B75D760" FromRole="AppUser" ToRole="AppTask" />
+          <NavigationProperty Name="AppTask1" Relationship="Self.FK__AppTask__Created__3C69FB99" FromRole="AppUser" ToRole="AppTask" />
+        </EntityType>
+        <Association Name="FK__AppNotifi__Assoc__4316F928">
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="0..1" />
+          <End Role="AppNotification" Type="Self.AppNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppTask">
+              <PropertyRef Name="TaskId" />
+            </Principal>
+            <Dependent Role="AppNotification">
+              <PropertyRef Name="AssociatedTaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppNotifi__UserI__403A8C7D">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="AppNotification" Type="Self.AppNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppNotification">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppTask__Assigne__3B75D760">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="0..1" />
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppTask">
+              <PropertyRef Name="AssignedToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AppTask__Created__3C69FB99">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="AppTask" Type="Self.AppTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AppTask">
+              <PropertyRef Name="CreatedByUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TMDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AppNotification" EntityType="Self.AppNotification" />
+          <EntitySet Name="AppTask" EntityType="Self.AppTask" />
+          <EntitySet Name="AppUser" EntityType="Self.AppUser" />
+          <AssociationSet Name="FK__AppNotifi__Assoc__4316F928" Association="Self.FK__AppNotifi__Assoc__4316F928">
+            <End Role="AppTask" EntitySet="AppTask" />
+            <End Role="AppNotification" EntitySet="AppNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppNotifi__UserI__403A8C7D" Association="Self.FK__AppNotifi__UserI__403A8C7D">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppNotification" EntitySet="AppNotification" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppTask__Assigne__3B75D760" Association="Self.FK__AppTask__Assigne__3B75D760">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppTask" EntitySet="AppTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AppTask__Created__3C69FB99" Association="Self.FK__AppTask__Created__3C69FB99">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="AppTask" EntitySet="AppTask" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TMDBModelStoreContainer" CdmEntityContainer="TMDBEntities">
+          <EntitySetMapping Name="AppNotification">
+            <EntityTypeMapping TypeName="TMDBModel.AppNotification">
+              <MappingFragment StoreEntitySet="AppNotification">
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="AssociatedTaskId" ColumnName="AssociatedTaskId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppTask">
+            <EntityTypeMapping TypeName="TMDBModel.AppTask">
+              <MappingFragment StoreEntitySet="AppTask">
+                <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AssignedToUserId" ColumnName="AssignedToUserId" />
+                <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppUser">
+            <EntityTypeMapping TypeName="TMDBModel.AppUser">
+              <MappingFragment StoreEntitySet="AppUser">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="LastLoginDate" ColumnName="LastLoginDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

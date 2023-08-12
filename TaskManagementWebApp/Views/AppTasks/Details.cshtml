@@ -1,0 +1,82 @@
+﻿@model TaskManagementWebApp.Models.AppTask
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>AppTask</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DueDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DueDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastUpdated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastUpdated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AppUser.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AppUser.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AppUser1.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AppUser1.Username)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.TaskId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
