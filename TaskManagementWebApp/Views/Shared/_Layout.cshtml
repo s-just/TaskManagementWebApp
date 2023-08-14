@@ -39,7 +39,6 @@
                         }
                     }
                     <li>@Html.ActionLink("My Tasks", "MyTasks", "AppTasks", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
                 @if (Session["Username"] != null) // Pass: Password1
@@ -55,12 +54,37 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Sean Just - ASP.NET</p>
         </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+<script>
+        $(document).ready(function () {
+            if (@(Session["UserId"] != null ? "true" : "false")) { // If user is logged in
+                // Poll every 10 seconds (you can adjust this time)
+                setInterval(function () {
+                    $.ajax({
+                        url: "/AppTasks/CheckForNewTask",
+                        method: "GET",
+                        success: function (data) {
+                            if (data.HasNewTask) {
+                                alert(data.Message);  // Or use a fancier popup mechanism
+                            }
+                            else {
+                                console.log("No new task");
+                            }
+                        },
+                        error: function (error) {
+                            console.log("Error while checking for new task:", error);
+                        }
+                    });
+                }, 10000);  // 10 seconds in milliseconds
+            }
+        });
+
+</script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

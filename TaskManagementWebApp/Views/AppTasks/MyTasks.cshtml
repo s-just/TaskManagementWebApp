@@ -12,9 +12,6 @@
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.DueDate)
         </th>
         <th>
@@ -29,33 +26,67 @@
         <th>
             Assigned By
         </th>
-        <th></th>
+        <th>Update Status</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DueDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateCreated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastUpdated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AppUser1.Username)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <div>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </div>
+                <div style="margin-top: 10px;">
+                    <strong>Description:</strong> @Html.DisplayFor(modelItem => item.Description)
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppUser1.Username)
+            </td>
+            <td>
+                <select onchange="updateStatus(@item.TaskId, this.value)">
+                    <option value="0" @(item.Status == 0 ? "selected" : "")>Inactive</option>
+                    <option value="1" @(item.Status == 1 ? "selected" : "")>In Progress</option>
+                    <option value="2" @(item.Status == 2 ? "selected" : "")>Complete</option>
+                </select>
 
+            </td>
+        </tr>
+    }
 </table>
+
+<script>
+    function updateStatus(taskId, status) {
+        if (@(Session["UserId"] != null ? "true" : "false")) {
+            $.ajax({
+                url: "/AppTasks/UpdateTaskStatus",  // Adjusted endpoint name for clarity
+                type: "POST",
+                data: {
+                    taskId: taskId,
+                    status: parseInt(status)
+                },
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            alert("You must be logged in to update the status of a task.");
+        }
+    }
+</script>

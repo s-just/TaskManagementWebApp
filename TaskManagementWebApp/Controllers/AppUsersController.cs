@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TaskManagementWebApp.Models;
+using TaskManagementWebApp.Views.ViewModels;
 
 namespace TaskManagementWebApp.Controllers
 {
@@ -36,7 +38,7 @@ namespace TaskManagementWebApp.Controllers
         {
             if (!IsUserAdmin())
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "AppUsers");
             }
             return View(db.AppUser.ToList());
         }
@@ -62,32 +64,30 @@ namespace TaskManagementWebApp.Controllers
             return View();
         }
 
-        // POST: AppUsers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserId,Username,Email,PasswordHash,DateCreated,LastLoginDate,IsAdmin")] AppUser appUser)
+        public ActionResult Create(AppUserCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Check if this is the first user
-                if (!db.AppUser.Any())
+                var appUser = new AppUser
                 {
-                    appUser.IsAdmin = true; // Make the first user an admin
-                }
-                // Hash the password before saving it
-                appUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(appUser.PasswordHash);
+                    Username = viewModel.Username,
+                    Email = viewModel.Email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(viewModel.Password),
+                    DateCreated = DateTime.Now,
+                    LastLoginDate = null,
+                    IsAdmin = !db.AppUser.Any()  // Make the first user an admin if there are no users yet
+                };
 
-                appUser.DateCreated = DateTime.Now;
-                appUser.LastLoginDate = null;
                 db.AppUser.Add(appUser);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(appUser);
+            return View(viewModel);
         }
+
 
         public ActionResult Login()
         {
@@ -105,7 +105,9 @@ namespace TaskManagementWebApp.Controllers
                 Session["Username"] = user.Username;
                 // Set the admin flag in session
                 Session["IsAdmin"] = user.IsAdmin;
-                return RedirectToAction("Index");
+                
+                // Return redirect to home page after logging in 
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError("", "Invalid username or password.");
