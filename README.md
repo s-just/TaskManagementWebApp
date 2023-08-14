@@ -18,3 +18,7 @@ This Task Manager is a basic web application demonstrating the capabilities of A
 - Each task has a task status where an assigned user can update the status (Incomplete, In Progress, or Complete)
 - Notifcations appear for tasks due within 24 hours upon logging in.
 - Logging of last updated task datetime when changing status of a task
+
+![Admin All Tasks View](TaskManagementWebApp/Screenshots/AllTasksExample01.png)
+
+![User My Tasks View](TaskManagementWebApp/Screenshots/MyTasksExample01.png)
